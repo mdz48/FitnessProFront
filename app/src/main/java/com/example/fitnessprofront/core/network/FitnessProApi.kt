@@ -1,5 +1,6 @@
 package com.example.fitnessprofront.core.network
 
+import com.example.fitnessprofront.features.recipies.data.datasources.remote.model.RecipeCreateDto
 import com.example.fitnessprofront.features.recipies.data.datasources.remote.model.RecipeDto
 import com.example.fitnessprofront.features.user.data.datasources.remote.model.UserCreateDto
 import com.example.fitnessprofront.features.user.data.datasources.remote.model.UserDto
@@ -31,4 +32,9 @@ interface FitnessProApi {
     suspend fun register(
         @Body user: UserCreateDto
     ): UserDto
+
+    @POST("recipes")
+    suspend fun createRecipe(
+        @Body recipe: RecipeCreateDto
+    ): RecipeDto
 }

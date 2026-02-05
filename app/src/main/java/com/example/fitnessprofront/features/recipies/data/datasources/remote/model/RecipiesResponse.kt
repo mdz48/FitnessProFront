@@ -24,7 +24,7 @@ data class RecipeCreateDto(
     val ingredients: String,
     val instructions: String,
     @SerializedName("user_id")
-    val userId: Int? = 1,
+    val userId: Int?,
     @SerializedName("scheduled_datetime")
     val scheduledDatetime: String? = null
 )

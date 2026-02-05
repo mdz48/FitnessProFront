@@ -8,10 +8,12 @@ import com.example.fitnessprofront.features.recipies.presentation.viewmodels.Rec
 
 @Composable
 fun HomeScreen(
-    recipiesViewModelFactory: RecipiesViewModelFactory
+    recipiesViewModelFactory: RecipiesViewModelFactory,
+    onNavigateToAddRecipe: () -> Unit
 ) {
     RecipesScreen(
         factory = recipiesViewModelFactory,
+        onNavigateToAddRecipe = onNavigateToAddRecipe,
         modifier = Modifier.fillMaxSize()
     )
 }
