@@ -21,9 +21,10 @@ android {
 
         // Cargar propiedades desde local.properties
         val properties = com.android.build.gradle.internal.cxx.configure.gradleLocalProperties(rootDir, providers)
-        buildConfigField("String", "BASE_URL", "\"${properties.getProperty("url", "https://exercisedb-api.vercel.app/api/v1/")}\"")
+        buildConfigField("String", "BASE_URL", "\"${properties.getProperty("backend_url", "http://10.0.2.2:8000/api/v1/")}\"")
         buildConfigField("String", "API_HOST", "\"${properties.getProperty("host", "exercisedb.p.rapidapi.com")}\"")
         buildConfigField("String", "API_KEY", "\"${properties.getProperty("key", "")}\"")
+        buildConfigField("String", "EXERCISE_DB_URL", "\"${properties.getProperty("url", "https://exercisedb-api.vercel.app/api/v1/")}\"")
     }
 
     buildTypes {
@@ -66,4 +67,6 @@ dependencies {
     implementation(libs.com.squareup.retrofit2.retrofit)        // Retrofit
     implementation(libs.com.squareup.retrofit2.converter.json)  // JSON
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.compose) // ViewModel Compose
+
 }

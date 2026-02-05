@@ -11,37 +11,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.fitnessprofront.core.di.AppContainer
 import com.example.fitnessprofront.core.theme.FitnessProFrontTheme
+import com.example.fitnessprofront.features.user.di.UserModule
+import com.example.fitnessprofront.features.user.presentation.screens.LoginScreen
 
 class MainActivity : ComponentActivity() {
+    lateinit var appContainer: AppContainer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        appContainer = AppContainer(context = this)
+        val userModule = UserModule(appContainer)
         enableEdgeToEdge()
         setContent {
             FitnessProFrontTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                LoginScreen(userModule.provideUserViewModelFactory())
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FitnessProFrontTheme {
-        Greeting("Android")
     }
 }
