@@ -40,7 +40,7 @@ class UserRepositoryImp(
 
     override suspend fun isUserLoggedIn(): Boolean {
         // TODO: Implementar lógica para verificar si el usuario está logueado
-        // Por ejemplo, verificar si existe un token guardado en SharedPreferences
+        // Por ejemplo, verificar si existe un access_token guardado en SharedPreferences
         return false
     }
 }

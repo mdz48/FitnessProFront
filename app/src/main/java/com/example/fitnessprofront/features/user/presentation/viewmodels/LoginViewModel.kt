@@ -38,8 +38,16 @@ class LoginViewModel(
                     email = _email.value,
                     password = _password.value
                 )
-
-                _uiState.update { it.copy(isLoading = false) }
+                if (response.access_token.isNotEmpty()) {
+                    _uiState.update { it.copy(isLoggedIn = true) }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            errorMessage = "Credenciales inválidas",
+                            isLoading = false
+                        )
+                    }
+                }
 
             } catch (e: Exception) {
                 _uiState.update {
@@ -48,6 +56,8 @@ class LoginViewModel(
                         errorMessage = e.message ?: "Error al iniciar sesión"
                     )
                 }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }

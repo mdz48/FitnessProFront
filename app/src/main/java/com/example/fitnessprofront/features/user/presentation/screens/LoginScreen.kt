@@ -25,7 +25,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun LoginScreen(
-    factory: LoginViewModelFactory,
+    viewModel: LoginViewModel,
+    onClickLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val viewModel: LoginViewModel = viewModel(factory = factory)
@@ -131,6 +132,12 @@ fun LoginScreen(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
+                    }
+
+                    when {
+                        uiState.isLoggedIn -> {
+                            navController()
+                        }
                     }
                 }
             }

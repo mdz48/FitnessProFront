@@ -19,7 +19,7 @@ import com.example.fitnessprofront.features.recipies.presentation.viewmodels.Rec
 import com.example.fitnessprofront.features.recipies.presentation.viewmodels.RecipiesViewModelFactory
 
 @Composable
-fun RecipiesScreen(
+fun RecipesScreen(
     factory: RecipiesViewModelFactory,
     modifier: Modifier = Modifier
 ) {

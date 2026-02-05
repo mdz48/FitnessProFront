@@ -11,7 +11,7 @@ data class UserDto (
 )
 
 data class UserLoginResponseDto (
-    val token : String,
+    val access_token : String,
     val token_type : String,
     val user : UserDto
 )

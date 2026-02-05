@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.fitnessprofront.core.di.AppContainer
+import com.example.fitnessprofront.core.navigation.NavigationWrapper
 import com.example.fitnessprofront.core.theme.FitnessProFrontTheme
 import com.example.fitnessprofront.features.user.di.UserModule
 import com.example.fitnessprofront.features.user.presentation.screens.LoginScreen
@@ -21,12 +22,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appContainer = AppContainer(context = this)
-        val userModule = UserModule(appContainer)
+        val userModule = UserModule
+
+        val navGraph = listOf(
+
+        )
         enableEdgeToEdge()
         setContent {
             FitnessProFrontTheme {
-                LoginScreen(userModule.provideUserViewModelFactory())
+//                LoginScreen(userModule.provideUserViewModelFactory())
+                NavigationWrapper(appContainer)
             }
+
         }
     }
 }
