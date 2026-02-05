@@ -26,6 +26,7 @@ import com.example.fitnessprofront.features.user.presentation.viewmodels.LoginVi
 fun LoginScreen(
     viewModel: LoginViewModel,
     onClickLogin: () -> Unit,
+    onNavigateToRegister: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -138,6 +139,18 @@ fun LoginScreen(
                             fontWeight = FontWeight.SemiBold
                         )
                     }
+                }
+
+                // Register Link
+                TextButton(
+                    onClick = onNavigateToRegister,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "¿No tienes cuenta? Regístrate",
+                        color = Color(0xFF10B981),
+                        fontSize = 14.sp
+                    )
                 }
             }
         }
