@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.secrets.gradle)
+    alias(libs.plugins.jetbrainsKotlinSerialization)
 }
 
 android {
@@ -68,5 +69,6 @@ dependencies {
     implementation(libs.com.squareup.retrofit2.converter.json)  // JSON
     implementation(libs.androidx.ui)
     implementation(libs.androidx.lifecycle.viewmodel.compose) // ViewModel Compose
-
+    implementation(libs.androidx.navigation.compose)        // Navigation Compose
+    implementation(libs.kotlinx.serialization.json)      // Kotlinx Serialization JSON
 }
