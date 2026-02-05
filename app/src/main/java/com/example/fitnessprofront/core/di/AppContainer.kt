@@ -3,6 +3,7 @@ package com.example.fitnessprofront.core.di
 import android.content.Context
 import com.example.fitnessprofront.BuildConfig
 import com.example.fitnessprofront.core.network.FitnessProApi
+import com.example.fitnessprofront.features.recipies.data.repositories.RecipeRepositoryImp
 import com.example.fitnessprofront.features.recipies.domain.repositories.RecipeRepository
 import com.example.fitnessprofront.features.user.data.repositories.UserRepositoryImp
 import com.example.fitnessprofront.features.user.domain.repositories.UserRepository
@@ -29,6 +30,6 @@ class AppContainer(context: Context) {
     }
 
     val recipeRepository : RecipeRepository by lazy {
-        RecipeRepository(fitnessProApi)
+        RecipeRepositoryImp(fitnessProApi)
     }
 }

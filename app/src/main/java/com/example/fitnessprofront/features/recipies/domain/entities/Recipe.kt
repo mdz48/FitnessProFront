@@ -1,10 +1,11 @@
 package com.example.fitnessprofront.features.recipies.domain.entities
 
 data class Recipe(
-    val id: String,
+    val id: Int,
     val name: String,
-    val ingredients: List<String>,
-    val instructions: List<String>,
-    val userId: Int,
-    val scheduledDate: String?
+    val description: String,
+    val ingredients: String,
+    val instructions: String,
+    val userId: Int?,
+    val scheduledDatetime: String?
 )

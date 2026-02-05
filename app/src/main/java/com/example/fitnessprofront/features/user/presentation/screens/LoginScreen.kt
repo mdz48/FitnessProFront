@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -20,8 +21,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.fitnessprofront.core.ui.components.InputFitness
 import com.example.fitnessprofront.features.user.presentation.viewmodels.LoginViewModel
-import com.example.fitnessprofront.features.user.presentation.viewmodels.LoginViewModelFactory
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun LoginScreen(
@@ -29,7 +28,6 @@ fun LoginScreen(
     onClickLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: LoginViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsState()
     val isDarkTheme = isSystemInDarkTheme()
 
@@ -38,6 +36,13 @@ fun LoginScreen(
 
     val email by viewModel.email.collectAsStateWithLifecycle()
     val password by viewModel.password.collectAsStateWithLifecycle()
+
+    // Navegar cuando el login sea exitoso
+    LaunchedEffect(uiState.isLoggedIn) {
+        if (uiState.isLoggedIn) {
+            onClickLogin()
+        }
+    }
 
     Box(
         modifier = modifier
@@ -132,12 +137,6 @@ fun LoginScreen(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
-                    }
-
-                    when {
-                        uiState.isLoggedIn -> {
-                            navController()
-                        }
                     }
                 }
             }

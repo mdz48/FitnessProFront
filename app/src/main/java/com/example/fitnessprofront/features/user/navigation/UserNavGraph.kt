@@ -5,12 +5,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.fitnessprofront.core.navigation.FeatureNavGraph
+import com.example.fitnessprofront.core.navigation.Home
 import com.example.fitnessprofront.core.navigation.Login
 import com.example.fitnessprofront.features.user.di.UserModule
 import com.example.fitnessprofront.features.user.presentation.screens.LoginScreen
 import com.example.fitnessprofront.features.user.presentation.viewmodels.LoginViewModel
 
-class UserNavGraph (
+class UserNavGraph(
     private val userModule: UserModule
 ) : FeatureNavGraph {
 
@@ -24,7 +25,11 @@ class UserNavGraph (
 
             LoginScreen(
                 viewModel = viewModel,
-                onClickLogin = { navController.navigateUp() }
+                onClickLogin = {
+                    navController.navigate(Home) {
+                        popUpTo(Login) { inclusive = true }
+                    }
+                }
             )
         }
     }

@@ -1,14 +1,30 @@
 package com.example.fitnessprofront.features.recipies.data.datasources.remote.model
 
+import com.google.gson.annotations.SerializedName
+
 data class RecipiesResponse(
-    val data: List<RecipieResponseDto>
+    val data: List<RecipeDto>
 )
 
-data class RecipieResponseDto(
-    val id : String,
+data class RecipeDto(
+    val id: Int,
     val name: String,
-    val ingredients: List<String>,
-    val instructions: List<String>,
-    val user_id: Int,
-    val scheduled_date: String?
+    val description: String,
+    val ingredients: String,
+    val instructions: String,
+    @SerializedName("user_id")
+    val userId: Int?,
+    @SerializedName("scheduled_datetime")
+    val scheduledDatetime: String?
+)
+
+data class RecipeCreateDto(
+    val name: String,
+    val description: String,
+    val ingredients: String,
+    val instructions: String,
+    @SerializedName("user_id")
+    val userId: Int? = 1,
+    @SerializedName("scheduled_datetime")
+    val scheduledDatetime: String? = null
 )

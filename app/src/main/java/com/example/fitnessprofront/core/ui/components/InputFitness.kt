@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun InputFitness(
-    value: String,
+    value: String?,
     onValueChange: (String) -> Unit,
     placeholder: String,
     modifier: Modifier = Modifier,
@@ -40,7 +40,7 @@ fun InputFitness(
     val focusedBorderColor = Color(0xFF10B981) // primary green color
 
     OutlinedTextField(
-        value = value,
+        value = value ?: "",
         onValueChange = onValueChange,
         modifier = modifier.fillMaxWidth(),
         placeholder = {

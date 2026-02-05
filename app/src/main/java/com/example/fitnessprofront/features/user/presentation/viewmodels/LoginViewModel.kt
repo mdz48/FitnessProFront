@@ -38,8 +38,9 @@ class LoginViewModel(
                     email = _email.value,
                     password = _password.value
                 )
+
                 if (response.access_token.isNotEmpty()) {
-                    _uiState.update { it.copy(isLoggedIn = true) }
+                    _uiState.update { it.copy(isLoggedIn = true, isLoading = false) }
                 } else {
                     _uiState.update {
                         it.copy(
@@ -56,8 +57,6 @@ class LoginViewModel(
                         errorMessage = e.message ?: "Error al iniciar sesión"
                     )
                 }
-            } finally {
-                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }

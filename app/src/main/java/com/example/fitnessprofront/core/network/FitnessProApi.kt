@@ -1,5 +1,6 @@
 package com.example.fitnessprofront.core.network
 
+import com.example.fitnessprofront.features.recipies.data.datasources.remote.model.RecipeDto
 import com.example.fitnessprofront.features.user.data.datasources.remote.model.UserDto
 import com.example.fitnessprofront.features.user.data.datasources.remote.model.UserLoginResponseDto
 import retrofit2.http.Field
@@ -9,8 +10,8 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface FitnessProApi {
-    @GET("recipies")
-    suspend fun getRecipies()
+    @GET("recipes")
+    suspend fun getRecipies(): List<RecipeDto>
 
     @FormUrlEncoded
     @POST("login")

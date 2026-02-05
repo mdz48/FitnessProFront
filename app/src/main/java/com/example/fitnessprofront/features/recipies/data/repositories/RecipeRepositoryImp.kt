@@ -9,6 +9,6 @@ class RecipeRepositoryImp(
     private val fitnessProApi: FitnessProApi
 ) : RecipeRepository {
     override suspend fun getRecipies(): List<Recipe> {
-        return fitnessProApi.getRecipies().data.map { it.toDomain() }
+        return fitnessProApi.getRecipies().map { it.toDomain() }
     }
 }
