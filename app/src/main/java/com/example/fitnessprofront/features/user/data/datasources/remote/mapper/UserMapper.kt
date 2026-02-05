@@ -7,6 +7,7 @@ fun UserDto.toDomain(): User {
     return User(
         id = this.id,
         email = this.email,
+        name = this.name,
         lastname = this.lastname
     )
 }

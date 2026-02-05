@@ -1,0 +1,19 @@
+package com.example.fitnessprofront.core.navigation
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+object Login
+
+@Serializable
+object Register
+
+@Serializable
+object Home
+
+@Serializable
+object AddRecipe
+
+@Serializable
+data class EditRecipe(val recipeId: Int)
+

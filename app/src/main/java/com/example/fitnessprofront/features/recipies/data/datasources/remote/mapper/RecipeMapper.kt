@@ -1,15 +1,16 @@
 package com.example.fitnessprofront.features.recipies.data.datasources.remote.mapper
 
-import com.example.fitnessprofront.features.recipies.data.datasources.remote.model.RecipieResponseDto
+import com.example.fitnessprofront.features.recipies.data.datasources.remote.model.RecipeDto
 import com.example.fitnessprofront.features.recipies.domain.entities.Recipe
 
-fun RecipieResponseDto.toDomain(): Recipe {
+fun RecipeDto.toDomain(): Recipe {
     return Recipe(
         id = this.id,
         name = this.name,
+        description = this.description,
         ingredients = this.ingredients,
         instructions = this.instructions,
-        userId = this.user_id,
-        scheduledDate = this.scheduled_date
+        userId = this.userId,
+        scheduledDatetime = this.scheduledDatetime
     )
 }
