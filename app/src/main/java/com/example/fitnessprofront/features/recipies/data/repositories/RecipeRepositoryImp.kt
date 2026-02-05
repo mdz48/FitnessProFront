@@ -31,4 +31,28 @@ class RecipeRepositoryImp(
         )
         return fitnessProApi.createRecipe(recipeCreateDto).toDomain()
     }
+
+    override suspend fun updateRecipe(
+        recipeId: Int,
+        name: String,
+        description: String,
+        ingredients: String,
+        instructions: String,
+        userId: Int?,
+        scheduledDatetime: String?
+    ): Recipe {
+        val recipeCreateDto = RecipeCreateDto(
+            name = name,
+            description = description,
+            ingredients = ingredients,
+            instructions = instructions,
+            userId = userId,
+            scheduledDatetime = scheduledDatetime
+        )
+        return fitnessProApi.updateRecipe(recipeId, recipeCreateDto).toDomain()
+    }
+
+    override suspend fun deleteRecipe(recipeId: Int) {
+        fitnessProApi.deleteRecipe(recipeId)
+    }
 }

@@ -14,3 +14,6 @@ object Home
 @Serializable
 object AddRecipe
 
+@Serializable
+data class EditRecipe(val recipeId: Int)
+

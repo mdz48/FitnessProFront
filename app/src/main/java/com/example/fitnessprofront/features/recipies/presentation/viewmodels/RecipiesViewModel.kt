@@ -3,7 +3,9 @@ package com.example.fitnessprofront.features.recipies.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessprofront.features.recipies.domain.usecases.CreateRecipeUseCase
+import com.example.fitnessprofront.features.recipies.domain.usecases.DeleteRecipeUseCase
 import com.example.fitnessprofront.features.recipies.domain.usecases.GetRecipiesUseCase
+import com.example.fitnessprofront.features.recipies.domain.usecases.UpdateRecipeUseCase
 import com.example.fitnessprofront.features.recipies.presentation.screens.RecipiesUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +15,9 @@ import kotlinx.coroutines.launch
 
 class RecipiesViewModel(
     private val getRecipiesUseCase: GetRecipiesUseCase,
-    private val createRecipeUseCase: CreateRecipeUseCase
+    private val createRecipeUseCase: CreateRecipeUseCase,
+    private val updateRecipeUseCase: UpdateRecipeUseCase,
+    private val deleteRecipeUseCase: DeleteRecipeUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RecipiesUIState())
@@ -80,7 +84,91 @@ class RecipiesViewModel(
         }
     }
 
+    fun updateRecipe(
+        recipeId: Int,
+        name: String,
+        description: String,
+        ingredients: String,
+        instructions: String,
+        userId: Int? = null,
+        scheduledDatetime: String? = null
+    ) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+
+            try {
+                val updatedRecipe = updateRecipeUseCase(
+                    recipeId = recipeId,
+                    name = name,
+                    description = description,
+                    ingredients = ingredients,
+                    instructions = instructions,
+                    userId = userId,
+                    scheduledDatetime = scheduledDatetime
+                )
+
+                // Actualizar la lista de recetas reemplazando la receta actualizada
+                val updatedRecipes = _uiState.value.recipies.map { recipe ->
+                    if (recipe.id == recipeId) updatedRecipe else recipe
+                }
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        recipies = updatedRecipes,
+                        recipeUpdated = true
+                    )
+                }
+
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = e.message ?: "Error al actualizar la receta"
+                    )
+                }
+            }
+        }
+    }
+
+    fun deleteRecipe(recipeId: Int) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+
+            try {
+                deleteRecipeUseCase(recipeId)
+
+                // Actualizar la lista de recetas eliminando la receta
+                val updatedRecipes = _uiState.value.recipies.filter { it.id != recipeId }
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        recipies = updatedRecipes,
+                        recipeDeleted = true
+                    )
+                }
+
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = e.message ?: "Error al eliminar la receta"
+                    )
+                }
+            }
+        }
+    }
+
     fun resetRecipeCreated() {
         _uiState.update { it.copy(recipeCreated = false) }
+    }
+
+    fun resetRecipeUpdated() {
+        _uiState.update { it.copy(recipeUpdated = false) }
+    }
+
+    fun resetRecipeDeleted() {
+        _uiState.update { it.copy(recipeDeleted = false) }
     }
 }
