@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class AppContainer(context: Context) {
     private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(BuildConfig.BASE_URL)
+        .baseUrl(BuildConfig.backend_desplegado)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
