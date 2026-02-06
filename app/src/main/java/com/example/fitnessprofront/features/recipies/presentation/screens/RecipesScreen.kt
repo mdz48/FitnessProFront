@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessprofront.features.recipies.domain.entities.Recipe
 import com.example.fitnessprofront.features.recipies.presentation.components.RecipeCard
@@ -37,7 +38,7 @@ fun RecipesScreen(
     modifier: Modifier = Modifier
 ) {
     val viewModel: RecipiesViewModel = viewModel(factory = factory)
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isDarkTheme = isSystemInDarkTheme()
 
     var showDeleteDialog by remember { mutableStateOf(false) }
