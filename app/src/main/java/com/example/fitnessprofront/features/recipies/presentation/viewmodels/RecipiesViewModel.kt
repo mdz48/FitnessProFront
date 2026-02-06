@@ -47,8 +47,9 @@ class RecipiesViewModel(
         description: String,
         ingredients: String,
         instructions: String,
-        userId: Int? = null,
-        scheduledDatetime: String? = null
+        userId: Int?,
+        scheduledDays: List<String>,
+        mealType: String
     ) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
@@ -60,10 +61,10 @@ class RecipiesViewModel(
                     ingredients = ingredients,
                     instructions = instructions,
                     userId = userId,
-                    scheduledDatetime = scheduledDatetime
+                    scheduledDays = scheduledDays,
+                    mealType = mealType
                 )
 
-                // Actualizar la lista de recetas añadiendo la nueva receta
                 val updatedRecipes = _uiState.value.recipies + newRecipe
                 _uiState.update {
                     it.copy(
@@ -90,8 +91,9 @@ class RecipiesViewModel(
         description: String,
         ingredients: String,
         instructions: String,
-        userId: Int? = null,
-        scheduledDatetime: String? = null
+        userId: Int?,
+        scheduledDays: List<String>,
+        mealType: String
     ) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
@@ -104,10 +106,10 @@ class RecipiesViewModel(
                     ingredients = ingredients,
                     instructions = instructions,
                     userId = userId,
-                    scheduledDatetime = scheduledDatetime
+                    scheduledDays = scheduledDays,
+                    mealType = mealType
                 )
 
-                // Actualizar la lista de recetas reemplazando la receta actualizada
                 val updatedRecipes = _uiState.value.recipies.map { recipe ->
                     if (recipe.id == recipeId) updatedRecipe else recipe
                 }
@@ -138,7 +140,6 @@ class RecipiesViewModel(
             try {
                 deleteRecipeUseCase(recipeId)
 
-                // Actualizar la lista de recetas eliminando la receta
                 val updatedRecipes = _uiState.value.recipies.filter { it.id != recipeId }
 
                 _uiState.update {

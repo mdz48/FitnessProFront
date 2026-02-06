@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,6 +33,9 @@ fun RecipeCard(
     val secondaryTextColor = if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF64748B)
     val accentColor = Color(0xFF10B981)
     val dividerColor = if (isDarkTheme) Color(0xFF334155) else Color(0xFFE2E8F0)
+
+    // Usa la función scheduledDaysOrEmpty() o maneja el null
+    val scheduledDays = recipe.scheduledDaysOrEmpty() // O: recipe.scheduledDays ?: emptyList()
 
     Card(
         onClick = onClick,
@@ -127,51 +129,68 @@ fun RecipeCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Ingredientes
-                Column() {
-                    Text("Ingredientes: ${recipe.ingredients}", fontSize = 12.sp, color = secondaryTextColor, fontWeight = FontWeight.Medium)
+                // Ingredientes e instrucciones - Maneja null safety
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        "Ingredientes: ${recipe.ingredients ?: "No especificados"}",
+                        fontSize = 12.sp,
+                        color = secondaryTextColor,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text("Instrucciones: ${recipe.instructions}", fontSize = 12.sp, color = secondaryTextColor, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        "Instrucciones: ${recipe.instructions ?: "No especificadas"}",
+                        fontSize = 12.sp,
+                        color = secondaryTextColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
 
-                // Fecha programada
-                if (recipe.scheduledDatetime != null) {
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.DateRange,
-                            contentDescription = null,
-                            tint = secondaryTextColor,
-                            modifier = Modifier.size(16.dp)
-                        )
                         Text(
-                            text = recipe.scheduledDatetime.split("T").firstOrNull() ?: recipe.scheduledDatetime,
+                            text = recipe.mealType,
                             fontSize = 12.sp,
                             color = secondaryTextColor,
                             fontWeight = FontWeight.Medium
                         )
                     }
+
+                    // Línea corregida: usa scheduledDays (que ya es una lista segura)
+                    if (scheduledDays.isNotEmpty()) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = "Scheduled days",
+                                tint = secondaryTextColor,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Text(
+                                text = scheduledDays.joinToString(", ") { it.take(3) },
+                                fontSize = 12.sp,
+                                color = secondaryTextColor,
+                                fontWeight = FontWeight.Medium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
                 }
             }
-
-            // Badge de ingredientes (opcional, para dar más información visual)
-//            Spacer(modifier = Modifier.height(12.dp))
-//
-//            Surface(
-//                color = accentColor.copy(alpha = 0.1f),
-//                shape = RoundedCornerShape(8.dp)
-//            ) {
-//                Text(
-//                    text = "Ver detalles →",
-//                    fontSize = 13.sp,
-//                    fontWeight = FontWeight.SemiBold,
-//                    color = accentColor,
-//                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-//                )
-//            }
         }
     }
 }

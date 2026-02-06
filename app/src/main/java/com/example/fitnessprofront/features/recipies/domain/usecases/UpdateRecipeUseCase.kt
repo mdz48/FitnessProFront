@@ -12,8 +12,9 @@ class UpdateRecipeUseCase(
         description: String,
         ingredients: String,
         instructions: String,
-        userId: Int? = null,
-        scheduledDatetime: String? = null
+        userId: Int?,
+        scheduledDays: List<String>,
+        mealType: String
     ): Recipe {
         return recipeRepository.updateRecipe(
             recipeId = recipeId,
@@ -22,7 +23,8 @@ class UpdateRecipeUseCase(
             ingredients = ingredients,
             instructions = instructions,
             userId = userId,
-            scheduledDatetime = scheduledDatetime
+            scheduledDays = scheduledDays,
+            mealType = mealType
         )
     }
 }

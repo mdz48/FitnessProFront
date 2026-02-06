@@ -19,7 +19,8 @@ class RecipeRepositoryImp(
         ingredients: String,
         instructions: String,
         userId: Int?,
-        scheduledDatetime: String?
+        scheduledDays: List<String>,
+        mealType: String
     ): Recipe {
         val recipeCreateDto = RecipeCreateDto(
             name = name,
@@ -27,7 +28,8 @@ class RecipeRepositoryImp(
             ingredients = ingredients,
             instructions = instructions,
             userId = userId,
-            scheduledDatetime = scheduledDatetime
+            scheduledDays = scheduledDays,
+            mealType = mealType
         )
         return fitnessProApi.createRecipe(recipeCreateDto).toDomain()
     }
@@ -39,7 +41,8 @@ class RecipeRepositoryImp(
         ingredients: String,
         instructions: String,
         userId: Int?,
-        scheduledDatetime: String?
+        scheduledDays: List<String>,
+        mealType: String
     ): Recipe {
         val recipeCreateDto = RecipeCreateDto(
             name = name,
@@ -47,7 +50,8 @@ class RecipeRepositoryImp(
             ingredients = ingredients,
             instructions = instructions,
             userId = userId,
-            scheduledDatetime = scheduledDatetime
+            scheduledDays = scheduledDays,
+            mealType = mealType
         )
         return fitnessProApi.updateRecipe(recipeId, recipeCreateDto).toDomain()
     }

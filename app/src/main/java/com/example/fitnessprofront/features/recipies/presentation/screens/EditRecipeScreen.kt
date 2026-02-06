@@ -36,18 +36,14 @@ fun EditRecipeScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isDarkTheme = isSystemInDarkTheme()
 
-    // Colores uniformes con LoginScreen
     val backgroundColor = if (isDarkTheme) Color(0xFF0F172A) else Color(0xFFF8FAFC)
     val textColor = if (isDarkTheme) Color.White else Color(0xFF0F172A)
     val labelColor = if (isDarkTheme) Color(0xFF94A3B8) else Color(0xFF64748B)
     val textFieldBackground = if (isDarkTheme) Color(0xFF1E293B) else Color.White
-    val textFieldBorder = if (isDarkTheme) Color(0xFF334155) else Color(0xFFE2E8F0)
     val placeholderColor = if (isDarkTheme) Color(0xFF64748B) else Color(0xFF94A3B8)
 
-    // Estado local para saber si ya se intentó cargar las recetas
     var hasAttemptedLoad by remember { mutableStateOf(false) }
 
-    // Cargar recetas si la lista está vacía
     LaunchedEffect(Unit) {
         if (uiState.recipies.isEmpty()) {
             viewModel.getRecipies()
@@ -55,19 +51,16 @@ fun EditRecipeScreen(
         hasAttemptedLoad = true
     }
 
-    // Encontrar la receta a editar
     val recipe = uiState.recipies.find { it.id == recipeId }
-
-    // Determinar si aún está cargando
     val isStillLoading = uiState.isLoading || (!hasAttemptedLoad && recipe == null)
 
     var recipeName by remember(recipe) { mutableStateOf(recipe?.name ?: "") }
-    var recipeDate by remember(recipe) { mutableStateOf(recipe?.scheduledDatetime ?: "") }
     var description by remember(recipe) { mutableStateOf(recipe?.description ?: "") }
     var ingredients by remember(recipe) { mutableStateOf(recipe?.ingredients ?: "") }
     var instructions by remember(recipe) { mutableStateOf(recipe?.instructions ?: "") }
+    var selectedDays by remember(recipe) { mutableStateOf(recipe?.scheduledDays?.toSet() ?: emptySet()) }
+    var selectedMealType by remember(recipe) { mutableStateOf(recipe?.mealType) }
 
-    // Observar cuando se actualiza exitosamente la receta
     LaunchedEffect(uiState.recipeUpdated) {
         if (uiState.recipeUpdated) {
             viewModel.resetRecipeUpdated()
@@ -97,24 +90,15 @@ fun EditRecipeScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = backgroundColor
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor)
             )
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
+        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             when {
-                // Mostrar loading mientras se cargan las recetas o aún no se ha intentado cargar
                 isStillLoading -> {
                     Column(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(32.dp),
+                        modifier = Modifier.align(Alignment.Center).padding(32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
@@ -131,13 +115,9 @@ fun EditRecipeScreen(
                         )
                     }
                 }
-
-                // Mostrar mensaje si no se encuentra la receta después de cargar
                 recipe == null -> {
                     Column(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(32.dp),
+                        modifier = Modifier.align(Alignment.Center).padding(32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
@@ -154,22 +134,14 @@ fun EditRecipeScreen(
                         )
                         Button(
                             onClick = onNavigateBack,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF10B981)
-                            )
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981))
                         ) {
-                            Text("Volver")
+                            Text(text = "Volver")
                         }
                     }
                 }
-
-                // Mostrar formulario cuando se encuentra la receta
                 else -> {
-                    AnimatedVisibility(
-                        visible = recipe != null,
-                        enter = fadeIn(),
-                        exit = fadeOut()
-                    ) {
+                    AnimatedVisibility(visible = recipe != null, enter = fadeIn(), exit = fadeOut()) {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -178,239 +150,239 @@ fun EditRecipeScreen(
                                 .padding(bottom = 80.dp),
                             verticalArrangement = Arrangement.spacedBy(24.dp)
                         ) {
-                    // Recipe Name
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = "NOMBRE DE LA RECETA",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = labelColor,
-                            letterSpacing = 1.2.sp,
-                            modifier = Modifier.padding(start = 4.dp)
-                        )
-                        InputFitness(
-                            value = recipeName,
-                            onValueChange = { recipeName = it },
-                            placeholder = "e.g. Grilled Salmon Salad"
-                        )
-                    }
-
-                    // Date
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = "FECHA (OPCIONAL)",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = labelColor,
-                            letterSpacing = 1.2.sp,
-                            modifier = Modifier.padding(start = 4.dp)
-                        )
-                        InputFitness(
-                            value = recipeDate,
-                            onValueChange = { recipeDate = it },
-                            placeholder = "YYYY-MM-DD"
-                        )
-                    }
-
-                    // Description
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = "DESCRIPCIÓN",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = labelColor,
-                            letterSpacing = 1.2.sp,
-                            modifier = Modifier.padding(start = 4.dp)
-                        )
-                        OutlinedTextField(
-                            value = description,
-                            onValueChange = { description = it },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(120.dp),
-                            placeholder = {
-                                Text(
-                                    text = "Escribe una breve descripción del plato...",
-                                    color = placeholderColor,
-                                    fontSize = 16.sp
-                                )
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = textFieldBackground,
-                                unfocusedContainerColor = textFieldBackground,
-                                focusedBorderColor = Color(0xFF10B981),
-                                unfocusedBorderColor = textFieldBorder,
-                                focusedTextColor = textColor,
-                                unfocusedTextColor = textColor,
-                                cursorColor = Color(0xFF10B981)
+                            InputFitness(
+                                value = recipeName,
+                                onValueChange = { recipeName = it },
+                                placeholder = "e.g. Grilled Salmon Salad"
                             )
-                        )
-                    }
 
-                    // Ingredients
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = "INGREDIENTES",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = labelColor,
-                            letterSpacing = 1.2.sp,
-                            modifier = Modifier.padding(start = 4.dp)
-                        )
-                        OutlinedTextField(
-                            value = ingredients,
-                            onValueChange = { ingredients = it },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(120.dp),
-                            placeholder = {
-                                Text(
-                                    text = "Lista los ingredientes...\nej. 1 taza de quinoa, 200g de tomates cherry",
-                                    color = placeholderColor,
-                                    fontSize = 16.sp
-                                )
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = textFieldBackground,
-                                unfocusedContainerColor = textFieldBackground,
-                                focusedBorderColor = Color(0xFF10B981),
-                                unfocusedBorderColor = textFieldBorder,
-                                focusedTextColor = textColor,
-                                unfocusedTextColor = textColor,
-                                cursorColor = Color(0xFF10B981)
+
+                            Text(
+                                text = "Días de la semana",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 16.sp,
+                                color = textColor,
+                                modifier = Modifier.padding(bottom = 4.dp)
                             )
-                        )
-                    }
 
-                    // Instructions
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = "INSTRUCCIONES",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = labelColor,
-                            letterSpacing = 1.2.sp,
-                            modifier = Modifier.padding(start = 4.dp)
-                        )
-                        OutlinedTextField(
-                            value = instructions,
-                            onValueChange = { instructions = it },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(180.dp),
-                            placeholder = {
-                                Text(
-                                    text = "1. Enjuagar la quinoa...\n2. Picar las verduras...\n3. Mezclar todo en un bowl...",
-                                    color = placeholderColor,
-                                    fontSize = 16.sp
-                                )
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = textFieldBackground,
-                                unfocusedContainerColor = textFieldBackground,
-                                focusedBorderColor = Color(0xFF10B981),
-                                unfocusedBorderColor = textFieldBorder,
-                                focusedTextColor = textColor,
-                                unfocusedTextColor = textColor,
-                                cursorColor = Color(0xFF10B981)
-                            )
-                        )
-                    }
-
-                    // Error Message
-                    if (uiState.errorMessage != null) {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color(0xFF991B1B).copy(alpha = 0.1f)
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                            val days = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Warning,
-                                    contentDescription = null,
-                                    tint = Color(0xFFEF4444)
-                                )
-                                Text(
-                                    text = uiState.errorMessage ?: "",
-                                    color = Color(0xFFEF4444),
-                                    fontSize = 14.sp
-                                )
+
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    days.take(3).forEach { day ->
+                                        FilterChip(
+                                            selected = selectedDays.contains(day),
+                                            onClick = {
+                                                selectedDays = if (selectedDays.contains(day)) {
+                                                    selectedDays - day
+                                                } else {
+                                                    selectedDays + day
+                                                }
+                                            },
+                                            label = { Text(day, fontSize = 14.sp) }
+                                        )
+                                    }
+                                }
+
+
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    days.slice(3..4).forEach { day -> // Jueves (3), Viernes (4)
+                                        FilterChip(
+                                            selected = selectedDays.contains(day),
+                                            onClick = {
+                                                selectedDays = if (selectedDays.contains(day)) {
+                                                    selectedDays - day
+                                                } else {
+                                                    selectedDays + day
+                                                }
+                                            },
+                                            label = { Text(day, fontSize = 14.sp) }
+                                        )
+                                    }
+                                }
+
+
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    days.takeLast(2).forEach { day ->
+                                        FilterChip(
+                                            selected = selectedDays.contains(day),
+                                            onClick = {
+                                                selectedDays = if (selectedDays.contains(day)) {
+                                                    selectedDays - day
+                                                } else {
+                                                    selectedDays + day
+                                                }
+                                            },
+                                            label = { Text(day, fontSize = 14.sp) }
+                                        )
+                                    }
+                                }
+                            }
+
+                            Text(
+                                text = "Tipo de comida",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 16.sp,
+                                color = textColor,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+
+                            val mealTypes = listOf("Desayuno", "Almuerzo", "Cena")
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                mealTypes.forEach { meal ->
+                                    FilterChip(
+                                        selected = selectedMealType == meal,
+                                        onClick = { selectedMealType = meal },
+                                        label = { Text(meal) }
+                                    )
+                                }
+                            }
+
+                            Text(
+                                text = "Descripción",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 16.sp,
+                                color = textColor,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+
+                            OutlinedTextField(
+                                value = description,
+                                onValueChange = { description = it },
+                                modifier = Modifier.fillMaxWidth().height(120.dp),
+                                placeholder = {
+                                    Text(
+                                        text = "Escribe una breve descripción del plato...",
+                                        color = placeholderColor,
+                                        fontSize = 16.sp
+                                    )
+                                },
+                                shape = RoundedCornerShape(12.dp)
+                            )
+
+                            Text(
+                                text = "Ingredientes",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 16.sp,
+                                color = textColor,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+
+                            OutlinedTextField(
+                                value = ingredients,
+                                onValueChange = { ingredients = it },
+                                modifier = Modifier.fillMaxWidth().height(120.dp),
+                                placeholder = {
+                                    Text(
+                                        text = "Lista los ingredientes...\nej. 1 taza de quinoa, 200g de tomates cherry",
+                                        color = placeholderColor,
+                                        fontSize = 16.sp
+                                    )
+                                },
+                                shape = RoundedCornerShape(12.dp)
+                            )
+
+                            Text(
+                                text = "Instrucciones",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 16.sp,
+                                color = textColor,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+
+                            OutlinedTextField(
+                                value = instructions,
+                                onValueChange = { instructions = it },
+                                modifier = Modifier.fillMaxWidth().height(180.dp),
+                                placeholder = {
+                                    Text(
+                                        text = "1. Enjuagar la quinoa...\n2. Picar las verduras...\n3. Mezclar todo en un bowl...",
+                                        color = placeholderColor,
+                                        fontSize = 16.sp
+                                    )
+                                },
+                                shape = RoundedCornerShape(12.dp)
+                            )
+
+                            if (uiState.errorMessage != null) {
+                                Card(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF991B1B).copy(alpha = 0.1f)),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Warning,
+                                            contentDescription = null,
+                                            tint = Color(0xFFEF4444)
+                                        )
+                                        Text(
+                                            text = uiState.errorMessage ?: "",
+                                            color = Color(0xFFEF4444),
+                                            fontSize = 14.sp
+                                        )
+                                    }
+                                }
+                            }
+
+                            Button(
+                                onClick = {
+                                    viewModel.updateRecipe(
+                                        recipeId = recipeId,
+                                        name = recipeName,
+                                        description = description,
+                                        ingredients = ingredients,
+                                        instructions = instructions,
+                                        userId = recipe.userId,
+                                        scheduledDays = selectedDays.toList(),
+                                        mealType = selectedMealType ?: ""
+                                    )
+                                },
+                                modifier = Modifier.fillMaxWidth().height(56.dp),
+                                enabled = !uiState.isLoading && recipeName.isNotBlank() && description.isNotBlank() && ingredients.isNotBlank() && instructions.isNotBlank() && selectedMealType != null,
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                if (uiState.isLoading) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(24.dp),
+                                        color = Color.White,
+                                        strokeWidth = 2.dp
+                                    )
+                                } else {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Check,
+                                            contentDescription = null,
+                                            tint = Color.White
+                                        )
+                                        Text(
+                                            text = "Actualizar Receta",
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color.White
+                                        )
+                                    }
+                                }
                             }
                         }
-                    }
-
-                    // Update Button
-                    Button(
-                        onClick = {
-                            viewModel.updateRecipe(
-                                recipeId = recipeId,
-                                name = recipeName,
-                                description = description,
-                                ingredients = ingredients,
-                                instructions = instructions,
-                                userId = recipe.userId,
-                                scheduledDatetime = recipeDate.ifEmpty { null }
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        enabled = !uiState.isLoading && recipeName.isNotBlank() &&
-                                description.isNotBlank() && ingredients.isNotBlank() &&
-                                instructions.isNotBlank(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF10B981),
-                            disabledContainerColor = Color(0xFF10B981).copy(alpha = 0.5f)
-                        )
-                    ) {
-                        if (uiState.isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                color = Color.White,
-                                strokeWidth = 2.dp
-                            )
-                        } else {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = null,
-                                    tint = Color.White
-                                )
-                                Text(
-                                    text = "Actualizar Receta",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Color.White
-                                )
-                            }
-                        }
-                    }
-                }
                     }
                 }
             }

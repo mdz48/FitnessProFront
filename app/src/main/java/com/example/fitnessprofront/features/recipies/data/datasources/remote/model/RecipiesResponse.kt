@@ -1,3 +1,4 @@
+// RecipeDto.kt - Actualiza para que coincida con la API
 package com.example.fitnessprofront.features.recipies.data.datasources.remote.model
 
 import com.google.gson.annotations.SerializedName
@@ -8,14 +9,16 @@ data class RecipiesResponse(
 
 data class RecipeDto(
     val id: Int,
-    val name: String,
-    val description: String,
-    val ingredients: String,
-    val instructions: String,
+    val name: String?,  // ← Ahora nullable
+    val description: String?,  // ← Ahora nullable
+    val ingredients: String?,  // ← Ahora nullable
+    val instructions: String?,  // ← Ahora nullable
     @SerializedName("user_id")
     val userId: Int?,
-    @SerializedName("scheduled_datetime")
-    val scheduledDatetime: String?
+    @SerializedName("scheduled_days")
+    val scheduledDays: List<String>?,  // ← Ya es nullable
+    @SerializedName("meal_type")
+    val mealType: String?  // ← Ahora nullable
 )
 
 data class RecipeCreateDto(
@@ -25,6 +28,8 @@ data class RecipeCreateDto(
     val instructions: String,
     @SerializedName("user_id")
     val userId: Int?,
-    @SerializedName("scheduled_datetime")
-    val scheduledDatetime: String? = null
+    @SerializedName("scheduled_days")
+    val scheduledDays: List<String>,
+    @SerializedName("meal_type")
+    val mealType: String
 )

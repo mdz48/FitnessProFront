@@ -11,8 +11,9 @@ class CreateRecipeUseCase(
         description: String,
         ingredients: String,
         instructions: String,
-        userId: Int? = null,
-        scheduledDatetime: String? = null
+        userId: Int?,
+        scheduledDays: List<String>,
+        mealType: String
     ): Recipe {
         return recipeRepository.createRecipe(
             name = name,
@@ -20,7 +21,8 @@ class CreateRecipeUseCase(
             ingredients = ingredients,
             instructions = instructions,
             userId = userId,
-            scheduledDatetime = scheduledDatetime
+            scheduledDays = scheduledDays,
+            mealType = mealType
         )
     }
 }

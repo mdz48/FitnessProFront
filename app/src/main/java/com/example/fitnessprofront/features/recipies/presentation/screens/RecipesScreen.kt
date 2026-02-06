@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessprofront.features.recipies.domain.entities.Recipe
 import com.example.fitnessprofront.features.recipies.presentation.components.RecipeCard
+import com.example.fitnessprofront.features.recipies.presentation.components.WeeklyCalendar
 import com.example.fitnessprofront.features.recipies.presentation.viewmodels.RecipiesViewModel
 import com.example.fitnessprofront.features.recipies.presentation.viewmodels.RecipiesViewModelFactory
 
@@ -42,6 +43,8 @@ fun RecipesScreen(
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var recipeToDelete by remember { mutableStateOf<Recipe?>(null) }
+    var showWeeklyCalendarDialog by remember { mutableStateOf(false) }
+    var selectedRecipeForCalendar by remember { mutableStateOf<Recipe?>(null) }
 
     val backgroundColor = if (isDarkTheme) Color(0xFF0F172A) else Color(0xFFF8FAFC)
     val textColor = if (isDarkTheme) Color.White else Color(0xFF0F172A)
@@ -49,6 +52,41 @@ fun RecipesScreen(
 
     LaunchedEffect(Unit) {
         viewModel.getRecipies()
+    }
+
+    if (showWeeklyCalendarDialog && selectedRecipeForCalendar != null) {
+        AlertDialog(
+            onDismissRequest = {
+                showWeeklyCalendarDialog = false
+                selectedRecipeForCalendar = null
+            },
+            title = {
+                Text(
+                    text = "Calendario Semanal - ${selectedRecipeForCalendar?.name}",
+                    fontWeight = FontWeight.Bold,
+                    color = textColor
+                )
+            },
+            text = {
+                WeeklyCalendar(
+                    recipes = listOf(selectedRecipeForCalendar!!),
+                    onRecipeClick = { /* No es necesario en este contexto */ },
+                    onEditRecipe = onNavigateToEditRecipe,
+                    onDeleteRecipe = { /* No es necesario en este contexto */ }
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showWeeklyCalendarDialog = false
+                        selectedRecipeForCalendar = null
+                    }
+                ) {
+                    Text("Cerrar", color = Color(0xFF10B981))
+                }
+            },
+            containerColor = if (isDarkTheme) Color(0xFF1E293B) else Color.White
+        )
     }
 
     Scaffold(
@@ -176,15 +214,17 @@ fun RecipesScreen(
 
                 else -> {
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(uiState.recipies) { recipe ->
                             RecipeCard(
                                 recipe = recipe,
                                 onClick = {
-                                    // TODO: Navegar a detalles de receta
+                                    selectedRecipeForCalendar = recipe
+                                    showWeeklyCalendarDialog = true
                                 },
                                 onEdit = {
                                     onNavigateToEditRecipe(recipe.id)
@@ -251,4 +291,3 @@ fun RecipesScreen(
         }
     }
 }
-
