@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.secrets.gradle)
     alias(libs.plugins.jetbrainsKotlinSerialization)
+    alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -38,14 +40,32 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    buildFeatures {
+     buildFeatures {
         compose = true
-        buildConfig = true
+        buildConfig = true  //Habilitar variables
+        resValues = true
+    }
+
+    ksp {
+        arg("hilt.disableModulesHaveInstallInCheck", "true")
     }
 }
+
+secrets {
+    propertiesFileName = "local.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
+    ignoreList.add("sdk.dir")
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+    }
+}
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -71,4 +91,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose) // ViewModel Compose
     implementation(libs.androidx.navigation.compose)        // Navigation Compose
     implementation(libs.kotlinx.serialization.json)      // Kotlinx Serialization JSON
+    implementation(libs.androidx.compose.material.icons.extended)   // Icons extendend
+    implementation(libs.hilt.android)                               // Implementación de Hilt
+    implementation(libs.hilt.navigation.compose)                    // Integración con Jetpack Compose
+    ksp(libs.hilt.compiler)                                         // KSP
 }

@@ -1,5 +1,6 @@
 package com.example.fitnessprofront.core.network
 
+import com.example.fitnessprofront.features.exercise.data.datasources.remote.model.ExercisesResponse
 import com.example.fitnessprofront.features.recipies.data.datasources.remote.model.RecipeCreateDto
 import com.example.fitnessprofront.features.recipies.data.datasources.remote.model.RecipeDto
 import com.example.fitnessprofront.features.user.data.datasources.remote.model.UserCreateDto
@@ -51,4 +52,15 @@ interface FitnessProApi {
     suspend fun deleteRecipe(
         @Path("recipe_id") recipeId: Int
     )
+
+    @GET("exercises")
+    suspend fun getExercises(
+        @Query("limit") limit: Int
+    ): ExercisesResponse
+
+    @GET("exercises/filter")
+    suspend fun getExercisesByBodyPart(
+        @Query("limit") limit: Int,
+        @Query("bodyParts") bodyPart: String
+    ): ExercisesResponse
 }
